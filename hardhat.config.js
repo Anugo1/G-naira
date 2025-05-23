@@ -10,9 +10,19 @@ const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY || "";
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
-  solidity: "0.8.28",
+  solidity: {
+    version: "0.8.19",
+    settings: {
+      optimizer: {
+        enabled: true,
+        runs: 200
+      }
+    }
+  },
   networks: {
-    hardhat: {},
+    hardhat: {
+      chainId: 1337
+    },
     "base-sepolia": {
       url: BASE_SEPOLIA_RPC_URL,
       accounts: PRIVATE_KEY ? [PRIVATE_KEY] : [],

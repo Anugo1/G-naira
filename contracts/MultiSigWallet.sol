@@ -62,12 +62,6 @@ contract MultiSigWallet {
         _;
     }
     
-    /**
-     * @dev Constructor to set up the MultiSigWallet
-     * @param _gngnToken The address of the GNGN token contract
-     * @param _signers Array of signer addresses
-     * @param _requiredConfirmations Number of required confirmations
-     */
     constructor(address _gngnToken, address[] memory _signers, uint256 _requiredConfirmations) {
         require(_signers.length > 0, "MultiSigWallet: signers required");
         require(_requiredConfirmations > 0 && _requiredConfirmations <= _signers.length, 
@@ -91,12 +85,7 @@ contract MultiSigWallet {
         requiredConfirmations = _requiredConfirmations;
     }
     
-    /**
-     * @dev Submit a transaction to mint tokens
-     * @param _target The address to receive minted tokens
-     * @param _amount The amount to mint
-     * @return txIndex The transaction index
-     */
+   
     function submitMintTransaction(address _target, uint256 _amount) 
         public
         onlySigner
@@ -120,12 +109,7 @@ contract MultiSigWallet {
         confirmTransaction(txIndex);
     }
     
-    /**
-     * @dev Submit a transaction to burn tokens
-     * @param _target The address to burn tokens from
-     * @param _amount The amount to burn
-     * @return txIndex The transaction index
-     */
+   
     function submitBurnTransaction(address _target, uint256 _amount) 
         public
         onlySigner
@@ -199,15 +183,7 @@ contract MultiSigWallet {
         emit TransactionExecuted(_txIndex);
     }
     
-    /**
-     * @dev Get transaction details
-     * @param _txIndex The transaction index
-     * @return target The target address
-     * @return amount The amount of tokens
-     * @return isMint Whether it's a mint transaction
-     * @return executed Whether the transaction was executed
-     * @return confirmations Number of confirmations
-     */
+    
     function getTransaction(uint256 _txIndex)
         public
         view
