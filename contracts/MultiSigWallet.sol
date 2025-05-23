@@ -2,11 +2,7 @@
 pragma solidity ^0.8.0;
 import "./GNGN.sol";
 
-/**
- * @title MultiSigWallet
- * @dev Contract for multi-signature governance of the GNGN token
- * Provides additional security for critical operations like minting and burning
- */
+//MultiSigWallet contract
 contract MultiSigWallet {
     // GNGN token reference
     GNGN public gngnToken;
@@ -22,12 +18,12 @@ contract MultiSigWallet {
     
     // Transaction struct
     struct Transaction {
-        address target;     // Target address for token operations
-        uint256 amount;     // Amount of tokens to mint or burn
-        bool isMint;        // True if mint, false if burn
-        bool executed;      // Whether the transaction was executed
-        uint256 confirmations; // Number of confirmations
-        mapping(address => bool) isConfirmed; // Confirmations from signers
+        address target;     
+        uint256 amount;     
+        bool isMint;        
+        bool executed;      
+        uint256 confirmations; 
+        mapping(address => bool) isConfirmed; 
     }
     
     // Transactions storage
@@ -133,10 +129,7 @@ contract MultiSigWallet {
         confirmTransaction(txIndex);
     }
     
-    /**
-     * @dev Confirm a transaction
-     * @param _txIndex The transaction index
-     */
+   
     function confirmTransaction(uint256 _txIndex) 
         public
         onlySigner
@@ -156,10 +149,7 @@ contract MultiSigWallet {
         }
     }
     
-    /**
-     * @dev Execute a confirmed transaction
-     * @param _txIndex The transaction index
-     */
+ 
     function executeTransaction(uint256 _txIndex) 
         public
         onlySigner
@@ -207,12 +197,7 @@ contract MultiSigWallet {
         );
     }
     
-    /**
-     * @dev Check if a transaction is confirmed by a signer
-     * @param _txIndex The transaction index
-     * @param _signer The signer address
-     * @return confirmed Whether the transaction is confirmed by the signer
-     */
+   
     function isConfirmed(uint256 _txIndex, address _signer)
         public
         view
@@ -222,10 +207,7 @@ contract MultiSigWallet {
         return transactions[_txIndex].isConfirmed[_signer];
     }
     
-    /**
-     * @dev Get the number of signers
-     * @return count The number of signers
-     */
+    
     function getSignerCount() public view returns (uint256 count) {
         return signers.length;
     }

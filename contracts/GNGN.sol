@@ -5,18 +5,7 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/security/Pausable.sol";
 import "./GovernorRole.sol";
 
-/**
- * @title G-Naira (gNGN)
- * @dev Implementation of the G-Naira CBDC
- * Includes:
- * - ERC20 token functionality
- * - Mint and burn capabilities for authorized governors
- * - Blacklisting functionality
- * - Secured by GovernorRole access control
- * - Rate limiting for minting/burning
- * - Maximum supply cap
- * - Emergency pause functionality
- */
+
 contract GNGN is ERC20, GovernorRole, Pausable {
     // Mapping to track blacklisted addresses
     mapping(address => bool) private _blacklisted;
@@ -39,16 +28,12 @@ contract GNGN is ERC20, GovernorRole, Pausable {
     event EmergencyPaused(address indexed by);
     event EmergencyUnpaused(address indexed by);
 
-    /**
-     * @dev Constructor that initializes the token with name and symbol
-     */
+    
     constructor() ERC20("G-Naira", "gNGN") {
         lastRateLimitReset = block.timestamp;
     }
 
-    /**
-     * @dev Modifier to check rate limits
-     */
+
     modifier checkRateLimit(uint256 amount, bool isMint) {
         if (block.timestamp >= lastRateLimitReset + RATE_LIMIT_PERIOD) {
             mintedInCurrentPeriod = 0;
@@ -67,97 +52,68 @@ contract GNGN is ERC20, GovernorRole, Pausable {
         _;
     }
 
-    /**
-     * @dev Mint new tokens
-     * @param to The address that will receive the minted tokens
-     * @param amount The amount of tokens to mint
-     */
+   
     function mint(address to, uint256 amount) external onlyGovernor whenNotPaused checkRateLimit(amount, true) {
         require(!_blacklisted[to], "GNGN: recipient is blacklisted");
         require(totalSupply() + amount <= MAX_SUPPLY, "GNGN: would exceed max supply");
         _mint(to, amount);
     }
 
-    /**
-     * @dev Burn tokens
-     * @param from The address from which to burn tokens
-     * @param amount The amount of tokens to burn
-     */
+   //burn function
+  
     function burn(address from, uint256 amount) external onlyGovernor whenNotPaused checkRateLimit(amount, false) {
         _burn(from, amount);
     }
 
-    /**
-     * @dev Add an address to blacklist
-     * @param account The address to blacklist
-     */
+  //blacklist function
     function blacklist(address account) external onlyGovernor {
         require(!_blacklisted[account], "GNGN: account is already blacklisted");
         _blacklisted[account] = true;
         emit Blacklisted(account);
     }
 
-    /**
-     * @dev Remove an address from blacklist
-     * @param account The address to remove from blacklist
-     */
+    //unblacklist function
     function unblacklist(address account) external onlyGovernor {
         require(_blacklisted[account], "GNGN: account is not blacklisted");
         _blacklisted[account] = false;
         emit Unblacklisted(account);
     }
 
-    /**
-     * @dev Check if an address is blacklisted
-     * @param account The address to check
-     * @return True if the account is blacklisted
-     */
+    //isBlacklisted function
     function isBlacklisted(address account) external view returns (bool) {
         return _blacklisted[account];
     }
 
-    /**
-     * @dev Pause all token transfers
-     */
+    //pause function
     function pause() external onlyGovernor {
         _pause();
         emit EmergencyPaused(msg.sender);
     }
 
-    /**
-     * @dev Unpause all token transfers
-     */
+
     function unpause() external onlyGovernor {
         _unpause();
         emit EmergencyUnpaused(msg.sender);
     }
 
-    /**
-     * @dev Override _beforeTokenTransfer to prevent blacklisted addresses from sending or receiving tokens
-     * and to respect pause state
-     */
+   //_beforeTokenTransfer function
     function _beforeTokenTransfer(
         address from,
         address to,
         uint256 amount
     ) internal virtual override {
         require(!paused(), "Pausable: paused");
-        // Check blacklist before transfer
-        if (from != address(0)) {  // Skip check during minting
+        
+        if (from != address(0)) {  
             require(!_blacklisted[from], "GNGN: sender is blacklisted");
         }
-        if (to != address(0)) {  // Skip check during burning
+        if (to != address(0)) { 
             require(!_blacklisted[to], "GNGN: recipient is blacklisted");
         }
         super._beforeTokenTransfer(from, to, amount);
     }
 
-    /**
-     * @dev Get current rate limit status
-     * @return minted Current minted amount in period
-     * @return burned Current burned amount in period
-     * @return timeUntilReset Time until rate limit reset
-     */
+   
     function getRateLimitStatus() external view returns (
         uint256 minted,
         uint256 burned,

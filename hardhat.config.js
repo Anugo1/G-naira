@@ -1,12 +1,9 @@
 require("@nomicfoundation/hardhat-toolbox");
 require("dotenv").config();
 
-// Get environment variables or use defaults
 const PRIVATE_KEY = process.env.PRIVATE_KEY || "";
 const BASE_SEPOLIA_RPC_URL = process.env.BASE_SEPOLIA_RPC_URL || "";
-const GOERLI_RPC_URL = process.env.GOERLI_RPC_URL || "";
-const MAINNET_RPC_URL = process.env.MAINNET_RPC_URL || "";
-const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY || "";
+const BASESCAN_API_KEY = process.env.BASESCAN_API_KEY || "";
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
@@ -26,23 +23,28 @@ module.exports = {
     "base-sepolia": {
       url: BASE_SEPOLIA_RPC_URL,
       accounts: PRIVATE_KEY ? [PRIVATE_KEY] : [],
-    },
-    goerli: {
-      url: GOERLI_RPC_URL,
-      accounts: PRIVATE_KEY ? [PRIVATE_KEY] : [],
-    },
-    mainnet: {
-      url: MAINNET_RPC_URL,
-      accounts: PRIVATE_KEY ? [PRIVATE_KEY] : [],
-    },
+      gasPrice: 1000000000, // 1 gwei
+    }
   },
   etherscan: {
-    apiKey: ETHERSCAN_API_KEY,
+    apiKey: {
+      "base-sepolia": BASESCAN_API_KEY
+    },
+    customChains: [
+      {
+        network: "base-sepolia",
+        chainId: 84532,
+        urls: {
+          apiURL: "https://api-sepolia.basescan.org/api",
+          browserURL: "https://sepolia.basescan.org"
+        }
+      }
+    ]
   },
   paths: {
     sources: "./contracts",
     tests: "./test",
     cache: "./cache",
-    artifacts: "./artifacts",
-  },
+    artifacts: "./artifacts"
+  }
 };
