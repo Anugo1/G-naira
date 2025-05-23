@@ -133,24 +133,23 @@ contract GNGN is ERC20, GovernorRole, Pausable {
     }
 
     /**
-     * @dev Override _update to prevent blacklisted addresses from sending or receiving tokens
+     * @dev Override _beforeTokenTransfer to prevent blacklisted addresses from sending or receiving tokens
      * and to respect pause state
      */
-    function _update(
+    function _beforeTokenTransfer(
         address from,
         address to,
         uint256 amount
-    ) internal virtual override whenNotPaused {
+    ) internal virtual override {
+        require(!paused(), "Pausable: paused");
         // Check blacklist before transfer
         if (from != address(0)) {  // Skip check during minting
             require(!_blacklisted[from], "GNGN: sender is blacklisted");
         }
-        
         if (to != address(0)) {  // Skip check during burning
             require(!_blacklisted[to], "GNGN: recipient is blacklisted");
         }
-        
-        super._update(from, to, amount);
+        super._beforeTokenTransfer(from, to, amount);
     }
 
     /**
