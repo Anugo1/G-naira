@@ -32,7 +32,7 @@ G-Naira (gNGN) is a blockchain-based Central Bank Digital Currency (CBDC) soluti
 
 ## Architecture
 
-The G-Naira system consists of two main contracts with integrated functionality:
+The G-Naira system consists of a contract with integrated functionality:
 
 ### GNGN Token Contract
 The primary contract implementing the ERC20 token with additional CBDC-specific functionality.
