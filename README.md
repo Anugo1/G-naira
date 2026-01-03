@@ -1,4 +1,4 @@
-# G-Naira (gNGN) - Central Bank Digital Currency
+8# G-Naira (gNGN) - Central Bank Digital Currency
 
 ## Overview
 G-Naira (gNGN) is a blockchain-based Central Bank Digital Currency (CBDC) solution designed to enhance transparency and accountability in a country's financial sector. This implementation leverages blockchain technology to provide a secure, traceable, and efficient digital currency system.
@@ -307,5 +307,3 @@ You can interact with the deployed G-Naira contract directly through the Base Se
 This project is licensed under the MIT License.
 
 ---
-
-*This project was developed for the Central Bank to improve financial transparency and accountability through blockchain technology.*
